@@ -1,6 +1,6 @@
 package br.com.zup.ranyell.keymanager.conta
 
-import br.com.zup.ranyell.keymanager.TipoDeConta
+
 import javax.persistence.Embeddable
 import javax.persistence.EnumType
 import javax.persistence.Enumerated

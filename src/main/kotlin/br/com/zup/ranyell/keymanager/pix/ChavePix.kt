@@ -5,7 +5,7 @@ import org.hibernate.annotations.GenericGenerator
 import javax.persistence.*
 
 @Entity
-class Pix(
+class ChavePix(
     @Column(unique = true)
     val chave: String,
     @Enumerated(EnumType.STRING)

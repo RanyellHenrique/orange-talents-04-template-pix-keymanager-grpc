@@ -1,10 +1,46 @@
 package br.com.zup.ranyell.keymanager.pix
 
+import io.micronaut.validation.validator.constraints.EmailValidator
+import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator
 
 
-enum class TipoDeChave(val validacao: String) {
-    CHAVE_ALEATORIA (validacao = "") ,
-    CPF (validacao ="^[0-9]{11}\$"),
-    TELEFONE (validacao ="^\\+[1-9][0-9]\\d{1,14}\$"),
-    EMAIL (validacao ="^(\\w|\\.)+@(\\w)+\\.(\\w){3}(\\.(\\w){2})?")
+enum class TipoDeChave {
+    CHAVE_ALEATORIA {
+        override fun valida(chave: String?): Boolean {
+            return chave.isNullOrBlank()
+        }
+    },
+    CPF {
+        override fun valida(chave: String?): Boolean {
+            if(chave.isNullOrBlank()) {
+                return false
+            }
+            return CPFValidator().run {
+                initialize(null)
+                isValid(chave, null)
+            }
+        }
+    },
+    EMAIL {
+        override fun valida(chave: String?): Boolean {
+            if(chave.isNullOrBlank()) {
+                return false
+            }
+            return EmailValidator().run {
+                initialize(null)
+                isValid(chave,null)
+            }
+        }
+    },
+    TELEFONE {
+        override fun valida(chave: String?): Boolean {
+            if(chave.isNullOrBlank()) {
+                return false
+            }
+            return chave.matches("^\\+[1-9][0-9]\\d{1,14}\$".toRegex())
+        }
+    };
+
+    abstract fun valida(chave: String?): Boolean
+
 }

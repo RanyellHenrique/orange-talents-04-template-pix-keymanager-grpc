@@ -13,21 +13,22 @@ service KeyManagerService {
 }
 
 enum TipoDeChave {
-  CHAVE_ALEATORIA= 0;
-  TELEFONE = 1;
-  EMAIL = 2;
-  CPF = 3;
+  UNKNOWN_TIPO_CHAVE = 0;
+  CHAVE_ALEATORIA= 1;
+  TELEFONE = 2;
+  EMAIL = 3;
+  CPF = 4;
 }
 
 enum TipoDeConta {
-  CONTA_CORRENTE = 0;
-  CONTA_POUPANCA = 1;
+  UNKNOWN_TIPO_CONTA = 0;
+  CONTA_CORRENTE = 1;
+  CONTA_POUPANCA = 2;
 }
 
 message ErrorDetails {
   int32 code = 1;
   string message = 2;
-  repeated string messages = 3;
 }
 
 
