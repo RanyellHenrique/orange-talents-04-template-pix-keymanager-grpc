@@ -3,10 +3,16 @@ micronaut:
     name: keyManager
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/keymanager?currentSchema=keymanager
+    url: jdbc:postgresql://localhost:5432/keymanager
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: 'postgres'
-    schema-generate: CREATE_DROP
-    dialect: POSTGRES
-jpa.default.properties.hibernate.hbm2ddl.auto: update
+    password: postgres
+    dialect: postgres
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+

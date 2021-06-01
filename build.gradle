@@ -8,6 +8,7 @@ plugins {
     id("com.google.protobuf") version "0.8.15"
 }
 
+
 version = "0.1"
 group = "br.com.zup.ranyell.keymanager"
 
@@ -16,6 +17,7 @@ repositories {
 }
 
 micronaut {
+    runtime("netty")
     testRuntime("junit5")
     processing {
         incremental(true)
@@ -33,12 +35,15 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+    implementation("io.micronaut:micronaut-http-client")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:testcontainers")
     implementation("io.micronaut:micronaut-validation")
+    implementation("org.valiktor:valiktor-core:0.12.0")
+
 
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 

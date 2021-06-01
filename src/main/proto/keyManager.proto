@@ -9,6 +9,37 @@ package br.com.zup.ranyell.keymanager;
 
 service KeyManagerService {
   rpc send (KeyManagerRequest) returns (KeyManagerReply) {}
+  rpc adicionaNovaChavePix (NovaChavePixRequest) returns (NovaChavePixResponse) {}
+}
+
+enum TipoDeChave {
+  CHAVE_ALEATORIA= 0;
+  TELEFONE = 1;
+  EMAIL = 2;
+  CPF = 3;
+}
+
+enum TipoDeConta {
+  CONTA_CORRENTE = 0;
+  CONTA_POUPANCA = 1;
+}
+
+message ErrorDetails {
+  int32 code = 1;
+  string message = 2;
+  repeated string messages = 3;
+}
+
+
+message NovaChavePixRequest {
+  string idCliente = 1;
+  TipoDeChave  tipoDeChave = 2;
+  string chave = 3;
+  TipoDeConta tipoDeConta = 4;
+}
+
+message NovaChavePixResponse {
+  string pixId = 1;
 }
 
 message KeyManagerRequest {
