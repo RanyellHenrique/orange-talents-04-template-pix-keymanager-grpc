@@ -2,6 +2,7 @@ package br.com.zup.ranyell.keymanager.conta
 
 
 import javax.persistence.Embeddable
+import javax.persistence.Embedded
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.validation.constraints.NotBlank
@@ -17,8 +18,10 @@ class Conta(
     @Enumerated(EnumType.STRING)
     val tipo: TipoDeConta,
     @NotNull
+    @Embedded
     val instituicao: Instituicao,
     @NotNull
+    @Embedded
     val titular: Titular
 ) {
 }

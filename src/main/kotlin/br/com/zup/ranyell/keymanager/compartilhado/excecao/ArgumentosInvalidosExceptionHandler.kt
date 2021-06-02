@@ -10,7 +10,6 @@ import javax.validation.ConstraintViolationException
 class ArgumentosInvalidosExceptionHandler : ExceptionHandler<ConstraintViolationException> {
 
     override fun handle(e: ConstraintViolationException): StatusWithDetails {
-        println("${e.message}, ${e.constraintViolations}")
         return StatusWithDetails(Status.INVALID_ARGUMENT
             .withDescription(e.message)
             .withCause(e))

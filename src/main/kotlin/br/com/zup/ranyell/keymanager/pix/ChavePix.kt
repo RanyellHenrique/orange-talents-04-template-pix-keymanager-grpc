@@ -2,15 +2,22 @@ package br.com.zup.ranyell.keymanager.pix
 
 import br.com.zup.ranyell.keymanager.conta.Conta
 import org.hibernate.annotations.GenericGenerator
+import java.time.LocalDateTime
 import javax.persistence.*
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 
 @Entity
 class ChavePix(
     @Column(unique = true)
+    @NotBlank
     val chave: String,
     @Enumerated(EnumType.STRING)
+    @NotNull
     val tipoDeChave: TipoDeChave,
-    val conta: Conta
+    @Embedded
+    val conta: Conta,
+    val registradaEm: LocalDateTime = LocalDateTime.now()
 ){
 
     @Id

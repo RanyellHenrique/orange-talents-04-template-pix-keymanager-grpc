@@ -7,9 +7,12 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.ranyell.keymanager;
 
-service KeyManagerService {
-  rpc send (KeyManagerRequest) returns (KeyManagerReply) {}
-  rpc registra(NovaChavePixRequest) returns (NovaChavePixResponse) {}
+service KeyManagerRemoveGrpcService {
+  rpc remove(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
+}
+
+service KeyManagerRegistraGrpcService {
+  rpc registra(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
 }
 
 enum TipoDeChave {
@@ -31,16 +34,25 @@ message ErrorDetails {
   string message = 2;
 }
 
-
-message NovaChavePixRequest {
+message RegistraChavePixRequest {
   string idCliente = 1;
   TipoDeChave  tipoDeChave = 2;
   string chave = 3;
   TipoDeConta tipoDeConta = 4;
 }
 
-message NovaChavePixResponse {
+message RegistraChavePixResponse {
   string pixId = 1;
+}
+
+message RemoveChavePixRequest {
+  string idCliente = 1;
+  string idPix = 2;
+}
+
+message RemoveChavePixResponse {
+  string idCliente = 1;
+  string idPix = 2;
 }
 
 message KeyManagerRequest {

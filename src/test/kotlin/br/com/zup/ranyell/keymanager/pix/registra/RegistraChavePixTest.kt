@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class NovaChavePixTest{
+internal class RegistraChavePixTest{
 
     lateinit var conta: Conta
 
@@ -27,7 +27,7 @@ internal class NovaChavePixTest{
     @Test
     internal fun `deve gerar uma nova chave quando o tipo for aleatorio`() {
         //cenário
-        val novaChavePix = NovaChavePix(
+        val novaChavePix = RegistraChavePix(
             idCliente = "ae93a61c-0652-43b3-bb8e-a17072295955",
             tipoDeChave = TipoDeChave.CHAVE_ALEATORIA,
             tipoDeConta = TipoDeConta.CONTA_CORRENTE,
@@ -42,7 +42,7 @@ internal class NovaChavePixTest{
     @Test
     internal fun `deve manter a chave indicada quando o tipo de chave nao for aleatorio`() {
         //cenário
-        val novaChavePix = NovaChavePix(
+        val novaChavePix = RegistraChavePix(
             idCliente = "ae93a61c-0652-43b3-bb8e-a17072295955",
             tipoDeChave = TipoDeChave.EMAIL,
             tipoDeConta = TipoDeConta.CONTA_CORRENTE,

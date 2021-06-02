@@ -1,7 +1,7 @@
 package br.com.zup.ranyell.keymanager.pix.registra
 
-import br.com.zup.ranyell.keymanager.KeyManagerServiceGrpc
-import br.com.zup.ranyell.keymanager.NovaChavePixRequest
+import br.com.zup.ranyell.keymanager.KeyManagerRegistraGrpcServiceGrpc
+import br.com.zup.ranyell.keymanager.RegistraChavePixRequest
 import br.com.zup.ranyell.keymanager.TipoDeChave
 import br.com.zup.ranyell.keymanager.TipoDeConta
 import br.com.zup.ranyell.keymanager.pix.ChavePixRepository
@@ -28,15 +28,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @MicronautTest(transactional = false)
-internal class RegistraNovaChavePixEndPointTest(
+internal class RegistraRegistraChavePixEndPointTest(
     val repository: ChavePixRepository,
-    val grpcClient: KeyManagerServiceGrpc.KeyManagerServiceBlockingStub
+    val grpcClient: KeyManagerRegistraGrpcServiceGrpc.KeyManagerRegistraGrpcServiceBlockingStub
 ) {
 
     @field:Inject
     lateinit var itauClient: SistemaItauClient
 
-    lateinit var novaChavePixRequest: NovaChavePixRequest
+    lateinit var novaChavePixRequest: RegistraChavePixRequest
 
     lateinit var contaResponse: ContaResponse
 
@@ -49,7 +49,7 @@ internal class RegistraNovaChavePixEndPointTest(
             IntituicaoResponse("itau", "123456"),
             TipoDeConta.CONTA_POUPANCA
         )
-        novaChavePixRequest = NovaChavePixRequest.newBuilder()
+        novaChavePixRequest = RegistraChavePixRequest.newBuilder()
             .setChave("23852310008")
             .setTipoDeChave(TipoDeChave.CPF)
             .setTipoDeConta(TipoDeConta.CONTA_POUPANCA)
@@ -74,7 +74,7 @@ internal class RegistraNovaChavePixEndPointTest(
     @Test
     internal fun `deve cadastrar uma nova chave quando nao for passado nenhuma chave e o tipo de chave for aleatoria`() {
         //cenário
-        val novaChavePixAleatoria = NovaChavePixRequest.newBuilder()
+        val novaChavePixAleatoria = RegistraChavePixRequest.newBuilder()
             .setTipoDeConta(TipoDeConta.CONTA_POUPANCA)
             .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
             .setTipoDeChave(TipoDeChave.CHAVE_ALEATORIA)
@@ -102,7 +102,7 @@ internal class RegistraNovaChavePixEndPointTest(
         }
         //validação
         with(result) {
-            assertEquals(Status.ALREADY_EXISTS.code ,status.code)
+            assertEquals(Status.ALREADY_EXISTS.code, status.code)
             assertEquals("ChavePix 23852310008 existente", status.description)
             assertEquals(1, repository.count())
         }
@@ -111,14 +111,14 @@ internal class RegistraNovaChavePixEndPointTest(
     @Test
     internal fun `nao deve cadastrar uma nova chave pix quando  a chave nao tiver o padrao estabelecido`() {
         //cenário
-        val novachavePixInvalida = NovaChavePixRequest.newBuilder()
+        val novachavePixInvalida = RegistraChavePixRequest.newBuilder()
             .setChave("não tem i padrão")
             .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
             .setTipoDeChave(TipoDeChave.EMAIL)
             .setTipoDeConta(TipoDeConta.CONTA_CORRENTE)
             .build()
         //ação
-        val result = assertThrows <StatusRuntimeException> {
+        val result = assertThrows<StatusRuntimeException> {
             grpcClient.registra(novachavePixInvalida)
         }
         //validação
@@ -153,8 +153,9 @@ internal class RegistraNovaChavePixEndPointTest(
     @Factory
     class Clients {
         @Singleton
-        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel): KeyManagerServiceGrpc.KeyManagerServiceBlockingStub? {
-            return KeyManagerServiceGrpc.newBlockingStub(channel)
+        fun blockingStub(@GrpcChannel(GrpcServerChannel.NAME) channel: ManagedChannel)
+                : KeyManagerRegistraGrpcServiceGrpc.KeyManagerRegistraGrpcServiceBlockingStub? {
+            return KeyManagerRegistraGrpcServiceGrpc.newBlockingStub(channel)
         }
     }
 

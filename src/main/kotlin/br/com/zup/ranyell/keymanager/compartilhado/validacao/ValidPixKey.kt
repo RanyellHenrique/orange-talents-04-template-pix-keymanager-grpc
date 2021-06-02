@@ -1,6 +1,6 @@
 package br.com.zup.ranyell.keymanager.compartilhado.validacao
 
-import br.com.zup.ranyell.keymanager.pix.registra.NovaChavePix
+import br.com.zup.ranyell.keymanager.pix.registra.RegistraChavePix
 import io.micronaut.core.annotation.AnnotationValue
 import io.micronaut.validation.validator.constraints.ConstraintValidator
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext
@@ -23,14 +23,17 @@ annotation class ValidPixKey(
 )
 
 @Singleton
-class ValidPixKeyValidator : ConstraintValidator<ValidPixKey, NovaChavePix> {
+class ValidPixKeyValidator : ConstraintValidator<ValidPixKey, RegistraChavePix> {
 
     override fun isValid(
-        value: NovaChavePix?,
+        value: RegistraChavePix?,
         annotationMetadata: AnnotationValue<ValidPixKey>,
         context: ConstraintValidatorContext
     ): Boolean {
-        return value!!.tipoDeChave!!.valida(value.chave)
+        if(value!!.tipoDeChave == null) {
+            return false
+        }
+        return value.tipoDeChave!!.valida(value.chave)
     }
 
 }
