@@ -10,11 +10,11 @@ import javax.inject.Singleton
 
 @ErrorHandler
 @Singleton
-class PixGRPCServer(
+class RegistraNovaChavePixEndPoint(
     val chavePixService: NovaChavePixService
 ) : KeyManagerServiceGrpc.KeyManagerServiceImplBase() {
 
-    override fun adicionaNovaChavePix(
+    override fun registra(
         request: NovaChavePixRequest?,
         responseObserver: StreamObserver<NovaChavePixResponse>?
     ) {

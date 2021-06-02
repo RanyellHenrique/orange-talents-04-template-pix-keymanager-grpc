@@ -23,7 +23,7 @@ class NovaChavePixService(
     @Transactional
     fun registra(@Valid novaChavePix: NovaChavePix): ChavePix {
         //1 - Verifica se a chave existe
-        if (repository.existsByChave(novaChavePix.chave)) {
+        if (repository.existsByChave(novaChavePix.chave!!)) {
             throw ChavePixExistenteException("ChavePix ${novaChavePix.chave} existente")
         }
         //2 - Busca os dados no ITAU

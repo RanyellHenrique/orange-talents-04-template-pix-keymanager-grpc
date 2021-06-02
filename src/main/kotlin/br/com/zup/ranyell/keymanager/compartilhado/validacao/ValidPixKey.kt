@@ -16,23 +16,20 @@ import kotlin.reflect.KClass
 @Target(CLASS, TYPE)
 @Retention(RUNTIME)
 @Constraint(validatedBy = [ValidPixKeyValidator::class])
-annotation class ValidPixKey (
+annotation class ValidPixKey(
     val message: String = "Chave pix inválida para o tipo \${validatedValue.tipo}",
     val groups: Array<KClass<Any>> = [],
     val payload: Array<KClass<Payload>> = []
-    )
+)
 
 @Singleton
-class ValidPixKeyValidator: ConstraintValidator<ValidPixKey, NovaChavePix> {
+class ValidPixKeyValidator : ConstraintValidator<ValidPixKey, NovaChavePix> {
 
     override fun isValid(
         value: NovaChavePix?,
         annotationMetadata: AnnotationValue<ValidPixKey>,
         context: ConstraintValidatorContext
     ): Boolean {
-        if(value!!.tipoDeChave == null) {
-            return  true
-        }
         return value!!.tipoDeChave!!.valida(value.chave)
     }
 

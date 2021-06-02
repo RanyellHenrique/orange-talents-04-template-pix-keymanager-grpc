@@ -9,7 +9,7 @@ package br.com.zup.ranyell.keymanager;
 
 service KeyManagerService {
   rpc send (KeyManagerRequest) returns (KeyManagerReply) {}
-  rpc adicionaNovaChavePix (NovaChavePixRequest) returns (NovaChavePixResponse) {}
+  rpc registra(NovaChavePixRequest) returns (NovaChavePixResponse) {}
 }
 
 enum TipoDeChave {

@@ -21,7 +21,7 @@ data class NovaChavePix(
     @field:NotNull
     val tipoDeChave: TipoDeChave?,
     @field:Size(max = 77)
-    var chave: String,
+    var chave: String?,
     @field:NotNull
     val tipoDeConta: TipoDeConta?
 ){
@@ -30,6 +30,6 @@ data class NovaChavePix(
         if(tipoDeChave == TipoDeChave.CHAVE_ALEATORIA) {
             this.chave = UUID.randomUUID().toString()
         }
-        return ChavePix(chave, tipoDeChave!!, conta)
+        return ChavePix(chave!!, tipoDeChave!!, conta)
     }
 }

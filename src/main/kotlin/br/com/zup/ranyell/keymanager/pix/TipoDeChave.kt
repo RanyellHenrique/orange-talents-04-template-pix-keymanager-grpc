@@ -1,6 +1,6 @@
 package br.com.zup.ranyell.keymanager.pix
 
-import io.micronaut.validation.validator.constraints.EmailValidator
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator
 
 
@@ -42,5 +42,4 @@ enum class TipoDeChave {
     };
 
     abstract fun valida(chave: String?): Boolean
-
 }
