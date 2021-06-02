@@ -28,7 +28,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @MicronautTest(transactional = false)
-internal class RegistraRegistraChavePixEndPointTest(
+internal class RegistraChavePixEndPointTest(
     val repository: ChavePixRepository,
     val grpcClient: KeyManagerRegistraGrpcServiceGrpc.KeyManagerRegistraGrpcServiceBlockingStub
 ) {

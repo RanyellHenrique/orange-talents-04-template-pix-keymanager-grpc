@@ -11,16 +11,12 @@ import javax.validation.Valid
 
 @Validated
 @Singleton
-class RemoveChavePixService(
-    @Inject val repository: ChavePixRepository,
-) {
-
+class RemoveChavePixService(@Inject val repository: ChavePixRepository) {
     @Transactional
     fun remove(@Valid removeChavePix: RemoveChavePix) {
         //Verifica se o id da chave existe e se pertence ao cliente
-        repository.findByIdAndContaTitularId(removeChavePix.idPix, removeChavePix.idCliente).orElseThrow {
-            RecursoNaoEncontradoException("Chave pix não encontrada ou não pertence ao cliente")
-        }
+        repository.findByIdAndContaTitularId(removeChavePix.idPix, removeChavePix.idCliente)
+            .orElseThrow { RecursoNaoEncontradoException("Chave pix não encontrada ou não pertence ao cliente") }
         //Remove a chave
         repository.deleteById(removeChavePix.idPix)
     }
