@@ -5,6 +5,7 @@ import br.com.zup.ranyell.keymanager.RegistraChavePixRequest
 import br.com.zup.ranyell.keymanager.TipoDeChave
 import br.com.zup.ranyell.keymanager.TipoDeConta
 import br.com.zup.ranyell.keymanager.pix.ChavePixRepository
+import br.com.zup.ranyell.keymanager.sistemabcb.*
 import br.com.zup.ranyell.keymanager.sistemaitau.ContaResponse
 import br.com.zup.ranyell.keymanager.sistemaitau.IntituicaoResponse
 import br.com.zup.ranyell.keymanager.sistemaitau.SistemaItauClient
@@ -22,8 +23,9 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
+import org.mockito.Mockito
+import org.mockito.Mockito.*
+import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,35 +38,29 @@ internal class RegistraChavePixEndPointTest(
     @field:Inject
     lateinit var itauClient: SistemaItauClient
 
-    lateinit var novaChavePixRequest: RegistraChavePixRequest
-
-    lateinit var contaResponse: ContaResponse
+    @field:Inject
+    lateinit var bcbClient: SistemaBCBClient
 
     @BeforeEach
     fun setup() {
-        contaResponse = ContaResponse(
-            "0001",
-            "0123",
-            TitularResponse("ae93a61c-0652-43b3-bb8e-a17072295955", "N", "23852310008"),
-            IntituicaoResponse("itau", "123456"),
-            TipoDeConta.CONTA_POUPANCA
+        `when`(bcbClient.registra(any(CreatePixKeyRequest::class.java))).thenReturn(
+            HttpResponse.created(
+                createPixKeyResponse()
+            )
         )
-        novaChavePixRequest = RegistraChavePixRequest.newBuilder()
-            .setChave("23852310008")
-            .setTipoDeChave(TipoDeChave.CPF)
-            .setTipoDeConta(TipoDeConta.CONTA_POUPANCA)
-            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
-            .build()
+        `when`(
+            itauClient.consulta(
+                "ae93a61c-0652-43b3-bb8e-a17072295955",
+                "CONTA_POUPANCA"
+            )
+        ).thenReturn(HttpResponse.ok(contaResponse()))
         repository.deleteAll()
     }
 
     @Test
     internal fun `deve cadastar uma nova chave pix`() {
-        //cenário
-        `when`(itauClient.consulta("ae93a61c-0652-43b3-bb8e-a17072295955", "CONTA_POUPANCA"))
-            .thenReturn(HttpResponse.ok(contaResponse))
         //ação
-        val result = grpcClient.registra(novaChavePixRequest)
+        val result = grpcClient.registra(registraChavePixRequest())
         //validação
         assertTrue(repository.existsById(result.pixId))
         assertNotNull(result.pixId)
@@ -79,9 +75,6 @@ internal class RegistraChavePixEndPointTest(
             .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
             .setTipoDeChave(TipoDeChave.CHAVE_ALEATORIA)
             .build()
-
-        `when`(itauClient.consulta("ae93a61c-0652-43b3-bb8e-a17072295955", "CONTA_POUPANCA"))
-            .thenReturn(HttpResponse.ok(contaResponse))
         //ação
         val result = grpcClient.registra(novaChavePixAleatoria)
         //validação
@@ -91,14 +84,48 @@ internal class RegistraChavePixEndPointTest(
     }
 
     @Test
-    internal fun `nao deve cadastrar uma nova chave pix quando a chave ja existir`() {
+    internal fun `nao deve cadastrar uma nova chave quando o tipo de chave nao for informado`() {
         //cenário
-        `when`(itauClient.consulta("ae93a61c-0652-43b3-bb8e-a17072295955", "CONTA_POUPANCA"))
-            .thenReturn(HttpResponse.ok(contaResponse))
-        grpcClient.registra(novaChavePixRequest)
+        val novachavePixInvalida = RegistraChavePixRequest.newBuilder()
+            .setChave("1233556")
+            .setTipoDeConta(TipoDeConta.CONTA_CORRENTE)
+            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .build()
         //ação
         val result = assertThrows<StatusRuntimeException> {
-            grpcClient.registra(novaChavePixRequest)
+            grpcClient.registra(novachavePixInvalida)
+        }
+        //validação
+        with(result) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+        }
+    }
+
+    @Test
+    internal fun `nao deve cadastrar uma nova chave quando o tipo de conta nao for informado`() {
+        //cenário
+        val novachavePixInvalida = RegistraChavePixRequest.newBuilder()
+            .setChave("1233556")
+            .setTipoDeChave(TipoDeChave.CHAVE_ALEATORIA)
+            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .build()
+        //ação
+        val result = assertThrows<StatusRuntimeException> {
+            grpcClient.registra(novachavePixInvalida)
+        }
+        //validação
+        with(result) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+        }
+    }
+
+    @Test
+    internal fun `nao deve cadastrar uma nova chave pix quando a chave ja existir`() {
+        //cenário
+        grpcClient.registra(registraChavePixRequest())
+        //ação
+        val result = assertThrows<StatusRuntimeException> {
+            grpcClient.registra(registraChavePixRequest())
         }
         //validação
         with(result) {
@@ -135,7 +162,7 @@ internal class RegistraChavePixEndPointTest(
             .thenReturn(HttpResponse.notFound())
         //ação
         val result = assertThrows<StatusRuntimeException> {
-            grpcClient.registra(novaChavePixRequest)
+            grpcClient.registra(registraChavePixRequest())
         }
         //validacao
         with(result) {
@@ -144,10 +171,32 @@ internal class RegistraChavePixEndPointTest(
         }
     }
 
+    @Test
+    internal fun `nao deve cadastrar uma nova chave quando o sistema BCB nao cadastrar uma nova chave`() {
+        //cenário
+        `when`(bcbClient.registra(any(CreatePixKeyRequest::class.java))).thenReturn(HttpResponse.badRequest())
+        //ação
+        val result = assertThrows<StatusRuntimeException> {
+            grpcClient.registra(registraChavePixRequest())
+        }
+        //validação
+        with(result) {
+            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals("Erro ao registrar a chave Pix no BCB", status.description)
+            assertEquals(0, repository.count())
+        }
+
+    }
 
     @MockBean(SistemaItauClient::class)
     fun itauMock(): SistemaItauClient {
         return mock(SistemaItauClient::class.java)
+    }
+
+
+    @MockBean(SistemaBCBClient::class)
+    fun bcbMock(): SistemaBCBClient {
+        return mock(SistemaBCBClient::class.java)
     }
 
     @Factory
@@ -157,6 +206,60 @@ internal class RegistraChavePixEndPointTest(
                 : KeyManagerRegistraGrpcServiceGrpc.KeyManagerRegistraGrpcServiceBlockingStub? {
             return KeyManagerRegistraGrpcServiceGrpc.newBlockingStub(channel)
         }
+    }
+
+    private fun createPixKeyResponse(): CreatePixKeyResponse {
+        return CreatePixKeyResponse(
+            keyType = KeyType.CPF,
+            key = "23852310008",
+            bankAccount = bankAccount(),
+            owner = owner(),
+            createdAt = LocalDateTime.now()
+        )
+    }
+
+    private fun createPixKeyRequest(): CreatePixKeyRequest {
+        return CreatePixKeyRequest(
+            keyType = KeyType.CPF,
+            key = "23852310008",
+            bankAccount = bankAccount(),
+            owner = owner()
+        )
+    }
+
+    private fun bankAccount(): BankAccount {
+        return BankAccount(
+            participant = "123456",
+            branch = "1218",
+            accountNumber = "291900",
+            accountType = AccountType.CACC
+        )
+    }
+
+    private fun owner(): Owner {
+        return Owner(
+            name = "Rafael Ponte",
+            taxIdNumber = "63657520325"
+        )
+    }
+
+    private fun contaResponse(): ContaResponse {
+        return ContaResponse(
+            agencia = "0001",
+            numero = "012345",
+            titular = TitularResponse("ae93a61c-0652-43b3-bb8e-a17072295955", "N", "23852310008"),
+            instituicao = IntituicaoResponse("itau", "123456"),
+            tipo = TipoDeConta.CONTA_POUPANCA
+        )
+    }
+
+    private fun registraChavePixRequest(): RegistraChavePixRequest {
+        return RegistraChavePixRequest.newBuilder()
+            .setChave("23852310008")
+            .setTipoDeChave(TipoDeChave.CPF)
+            .setTipoDeConta(TipoDeConta.CONTA_POUPANCA)
+            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .build()
     }
 
 }

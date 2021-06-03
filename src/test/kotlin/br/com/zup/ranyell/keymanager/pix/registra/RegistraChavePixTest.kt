@@ -25,21 +25,6 @@ internal class RegistraChavePixTest{
     }
 
     @Test
-    internal fun `deve gerar uma nova chave quando o tipo for aleatorio`() {
-        //cenário
-        val novaChavePix = RegistraChavePix(
-            idCliente = "ae93a61c-0652-43b3-bb8e-a17072295955",
-            tipoDeChave = TipoDeChave.CHAVE_ALEATORIA,
-            tipoDeConta = TipoDeConta.CONTA_CORRENTE,
-            chave = null
-        )
-        //ação
-        val result = novaChavePix.toModel(conta)
-        //validação
-        assertNotNull(result.chave)
-    }
-
-    @Test
     internal fun `deve manter a chave indicada quando o tipo de chave nao for aleatorio`() {
         //cenário
         val novaChavePix = RegistraChavePix(

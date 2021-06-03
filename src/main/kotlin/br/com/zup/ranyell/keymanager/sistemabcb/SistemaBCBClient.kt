@@ -19,14 +19,14 @@ interface SistemaBCBClient {
         consumes = [MediaType.APPLICATION_XML],
         produces = [MediaType.APPLICATION_XML]
     )
-    fun registra(@Body createPixKeyRequest: CreatePixKeyRequest): HttpResponse<CreatePixKeyResponse>
+    fun registra(@Body createPixKeyRequest: CreatePixKeyRequest?): HttpResponse<CreatePixKeyResponse>
 
     @Delete(
         value = "/api/v1/pix/keys/{key}",
         consumes = [MediaType.APPLICATION_XML],
         produces = [MediaType.APPLICATION_XML]
     )
-    fun deleta(@Body deleteRequest: DeletePixKeyRequest, @PathVariable key: String): HttpResponse<DeletePixKeyResponse>
+    fun deleta(@Body deleteRequest: DeletePixKeyRequest?, @PathVariable key: String?): HttpResponse<DeletePixKeyResponse>
 
 
 }
