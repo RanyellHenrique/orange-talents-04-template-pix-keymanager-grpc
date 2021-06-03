@@ -27,9 +27,6 @@ data class RegistraChavePix(
 ){
 
     fun toModel(conta: Conta): ChavePix {
-        if(tipoDeChave == TipoDeChave.CHAVE_ALEATORIA) {
-            this.chave = UUID.randomUUID().toString()
-        }
         return ChavePix(chave!!, tipoDeChave!!, conta)
     }
 }

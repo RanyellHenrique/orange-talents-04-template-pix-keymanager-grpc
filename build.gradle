@@ -54,6 +54,8 @@ dependencies {
 
     runtimeOnly("com.h2database:h2")
 
+    implementation("io.micronaut.xml:micronaut-jackson-xml")
+
 }
 
 

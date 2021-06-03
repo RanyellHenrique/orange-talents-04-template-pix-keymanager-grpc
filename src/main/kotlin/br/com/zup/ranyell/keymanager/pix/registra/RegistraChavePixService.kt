@@ -3,10 +3,12 @@ package br.com.zup.ranyell.keymanager.pix.registra
 import br.com.zup.ranyell.keymanager.compartilhado.excecao.RecursoExistenteException
 import br.com.zup.ranyell.keymanager.pix.ChavePix
 import br.com.zup.ranyell.keymanager.pix.ChavePixRepository
+import br.com.zup.ranyell.keymanager.sistemabcb.CreatePixKeyRequest
+import br.com.zup.ranyell.keymanager.sistemabcb.SistemaBCBClient
 import br.com.zup.ranyell.keymanager.sistemaitau.SistemaItauClient
+import io.micronaut.http.HttpStatus
 import io.micronaut.validation.Validated
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 import javax.inject.Singleton
 import javax.transaction.Transactional
@@ -16,7 +18,8 @@ import javax.validation.Valid
 @Singleton
 class RegistraChavePixService(
     @Inject val repository: ChavePixRepository,
-    @Inject val itauClient: SistemaItauClient
+    @Inject val itauClient: SistemaItauClient,
+    @Inject val bcbClient: SistemaBCBClient
 ) {
     private val LOGGER = LoggerFactory.getLogger(this::class.java)
 
@@ -26,10 +29,20 @@ class RegistraChavePixService(
         if (repository.existsByChave(registraChavePix.chave!!)) {
             throw RecursoExistenteException("ChavePix ${registraChavePix.chave} existente")
         }
+
         //2 - Busca os dados no ITAU
-        val response = itauClient.consulta(registraChavePix.idCliente, registraChavePix.tipoDeConta!!.name)
-        val conta = response.body()?.toModel() ?: throw IllegalArgumentException("Cliente não encontrado no Itaú")
+        val responseItau = itauClient.consulta(registraChavePix.idCliente, registraChavePix.tipoDeConta!!.name)
+        val conta = responseItau.body()?.toModel() ?: throw IllegalArgumentException("Cliente não encontrado no Itaú")
+
+        //3 - Registra a chave no BCB
+        LOGGER.info("Registrando a chave ${registraChavePix.chave} no BCB")
+        val responseBcb = bcbClient.registra(CreatePixKeyRequest(conta, registraChavePix))
+        if (responseBcb.status != HttpStatus.CREATED) {
+            throw  IllegalArgumentException("Erro ao registrar a chave Pix no BCB")
+        }
+        val chavePix = responseBcb.body()?.toModel(conta, registraChavePix.tipoDeChave!!)
+
         //3 - Grava no banco
-        return repository.save(registraChavePix.toModel(conta))
+        return repository.save(chavePix!!)
     }
 }

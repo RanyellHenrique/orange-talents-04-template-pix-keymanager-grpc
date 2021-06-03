@@ -1,6 +1,8 @@
 package br.com.zup.ranyell.keymanager.conta
 
-enum class TipoDeConta {
-    CONTA_CORRENTE,
-    CONTA_POUPANCA
+import br.com.zup.ranyell.keymanager.sistemabcb.AccountType
+
+enum class TipoDeConta(val type: AccountType) {
+    CONTA_CORRENTE (AccountType.CACC),
+    CONTA_POUPANCA (AccountType.SVGS)
 }

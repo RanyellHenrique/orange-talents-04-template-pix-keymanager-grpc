@@ -1,16 +1,17 @@
 package br.com.zup.ranyell.keymanager.pix
 
+import br.com.zup.ranyell.keymanager.sistemabcb.KeyType
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator
 import org.hibernate.validator.internal.constraintvalidators.hv.br.CPFValidator
 
 
-enum class TipoDeChave {
-    CHAVE_ALEATORIA {
+enum class TipoDeChave(val type: KeyType) {
+    CHAVE_ALEATORIA (KeyType.RANDOM){
         override fun valida(chave: String?): Boolean {
             return chave.isNullOrBlank()
         }
     },
-    CPF {
+    CPF (KeyType.CPF) {
         override fun valida(chave: String?): Boolean {
             if(chave.isNullOrBlank()) {
                 return false
@@ -21,7 +22,7 @@ enum class TipoDeChave {
             }
         }
     },
-    EMAIL {
+    EMAIL (KeyType.EMAIL){
         override fun valida(chave: String?): Boolean {
             if(chave.isNullOrBlank()) {
                 return false
@@ -32,7 +33,7 @@ enum class TipoDeChave {
             }
         }
     },
-    TELEFONE {
+    TELEFONE (KeyType.PHONE){
         override fun valida(chave: String?): Boolean {
             if(chave.isNullOrBlank()) {
                 return false
