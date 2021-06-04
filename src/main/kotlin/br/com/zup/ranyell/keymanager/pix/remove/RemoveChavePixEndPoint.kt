@@ -17,8 +17,8 @@ class RemoveChavePixEndPoint(
     override fun remove(request: RemoveChavePixRequest?, responseObserver: StreamObserver<RemoveChavePixResponse>?) {
         removeChavePixService.remove(request!!.toModel())
         val response = RemoveChavePixResponse.newBuilder()
-            .setIdCliente(request.idCliente)
-            .setIdPix(request.idPix)
+            .setClienteId(request.clienteId)
+            .setPixId(request.pixId)
             .build()
 
         responseObserver!!.onNext(response)

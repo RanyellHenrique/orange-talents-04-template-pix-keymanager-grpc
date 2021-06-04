@@ -4,7 +4,7 @@ import br.com.zup.ranyell.keymanager.RemoveChavePixRequest
 
 fun RemoveChavePixRequest.toModel(): RemoveChavePix {
     return RemoveChavePix(
-        idCliente = idCliente,
-        idPix = idPix
+        idCliente = clienteId,
+        idPix = pixId
     )
 }

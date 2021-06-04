@@ -63,8 +63,8 @@ internal class RemoveChavePixEndPointTest(
     internal fun `deve remover a chave quando a chave existir e pertencer ao cliente`() {
         //cenario
         val request = RemoveChavePixRequest.newBuilder()
-            .setIdCliente(CHAVE_EXISTENTE.conta.titular.id)
-            .setIdPix(CHAVE_EXISTENTE.id)
+            .setClienteId(CHAVE_EXISTENTE.conta.titular.id)
+            .setPixId(CHAVE_EXISTENTE.id)
             .build()
 
         //ação
@@ -72,16 +72,16 @@ internal class RemoveChavePixEndPointTest(
         //validação
         assertFalse(repository.existsByChave(CHAVE_EXISTENTE.chave))
         assertEquals(0, repository.count())
-        assertEquals(request.idPix, result.idPix)
-        assertEquals(request.idCliente, result.idCliente)
+        assertEquals(request.pixId, result.pixId)
+        assertEquals(request.clienteId, result.clienteId)
     }
 
     @Test
     internal fun `nao deve remover a chave quando a chave nao pertencer ao cliente`() {
         //cenario
         val request = RemoveChavePixRequest.newBuilder()
-            .setIdCliente(UUID.randomUUID().toString())
-            .setIdPix(CHAVE_EXISTENTE.id)
+            .setClienteId(UUID.randomUUID().toString())
+            .setPixId(CHAVE_EXISTENTE.id)
             .build()
         //ação
         val result = assertThrows<StatusRuntimeException> {
@@ -98,8 +98,8 @@ internal class RemoveChavePixEndPointTest(
     internal fun `nao deve remover a chave quando a chave nao existir`() {
         //cenario
         val request = RemoveChavePixRequest.newBuilder()
-            .setIdCliente(UUID.randomUUID().toString())
-            .setIdPix(UUID.randomUUID().toString())
+            .setClienteId(UUID.randomUUID().toString())
+            .setPixId(UUID.randomUUID().toString())
             .build()
         //ação
         val result = assertThrows<StatusRuntimeException> {
@@ -116,8 +116,8 @@ internal class RemoveChavePixEndPointTest(
     internal fun `nao deve remover a chave quando nao for removida no servico BCB`() {
         //cenário
         val request = RemoveChavePixRequest.newBuilder()
-            .setIdCliente(CHAVE_EXISTENTE.conta.titular.id)
-            .setIdPix(CHAVE_EXISTENTE.id)
+            .setClienteId(CHAVE_EXISTENTE.conta.titular.id)
+            .setPixId(CHAVE_EXISTENTE.id)
             .build()
         `when`(bcbClient.deleta(any(), any())).thenReturn(HttpResponse.badRequest())
         //ação

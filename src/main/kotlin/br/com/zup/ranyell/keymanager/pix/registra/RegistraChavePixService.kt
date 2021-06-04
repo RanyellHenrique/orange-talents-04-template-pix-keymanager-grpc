@@ -34,15 +34,18 @@ class RegistraChavePixService(
         val responseItau = itauClient.consulta(registraChavePix.idCliente, registraChavePix.tipoDeConta!!.name)
         val conta = responseItau.body()?.toModel() ?: throw IllegalArgumentException("Cliente não encontrado no Itaú")
 
-        //3 - Registra a chave no BCB
+        //3 - Grava no banco
+        val chave = registraChavePix.toModel(conta)
+        repository.save(chave)
+
+        //4 - Registra a chave no BCB
         LOGGER.info("Registrando a chave ${registraChavePix.chave} no BCB")
-        val responseBcb = bcbClient.registra(CreatePixKeyRequest(conta, registraChavePix))
+        val responseBcb = bcbClient.registra(CreatePixKeyRequest(chave))
         if (responseBcb.status != HttpStatus.CREATED) {
             throw  IllegalArgumentException("Erro ao registrar a chave Pix no BCB")
         }
-        val chavePix = responseBcb.body()?.toModel(conta, registraChavePix.tipoDeChave!!)
+        chave.atualiza(responseBcb.body()!!.key)
 
-        //3 - Grava no banco
-        return repository.save(chavePix!!)
+        return chave
     }
 }

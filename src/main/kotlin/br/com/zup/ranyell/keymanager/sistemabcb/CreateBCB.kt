@@ -13,19 +13,11 @@ data class CreatePixKeyRequest(
     val bankAccount: BankAccount,
     val owner: Owner
 ) {
-    constructor(conta: Conta, registraChavePix: RegistraChavePix) : this(
-        keyType = registraChavePix.tipoDeChave!!.type,
-        key = registraChavePix.chave,
-        bankAccount = BankAccount(
-            participant = conta.instituicao.ispb,
-            branch = conta.agencia,
-            accountNumber = conta.numero,
-            accountType = conta.tipo.type
-        ),
-        owner = Owner(
-            name = conta.titular.nome,
-            taxIdNumber = conta.titular.cpf
-        )
+    constructor(chavePix: ChavePix) : this(
+        keyType = chavePix.tipoDeChave!!.type,
+        key = chavePix.chave,
+        bankAccount = BankAccount(chavePix.conta),
+        owner = Owner(chavePix.conta)
     )
 }
 
@@ -36,22 +28,21 @@ data class CreatePixKeyResponse(
     val owner: Owner,
     val createdAt: LocalDateTime
 ) {
-    fun toModel(conta: Conta, tipoDeChave: TipoDeChave): ChavePix {
-        return ChavePix(
-            chave = key!!,
-            conta = conta,
-            registradaEm = createdAt,
-            tipoDeChave = tipoDeChave
-        )
-    }
 }
 
-enum class KeyType {
-    CPF, RANDOM, EMAIL, CNPJ, PHONE;
+enum class KeyType(val tipoDeChave: TipoDeChave) {
+    CPF(TipoDeChave.CPF),
+    RANDOM(TipoDeChave.CHAVE_ALEATORIA),
+    EMAIL(TipoDeChave.EMAIL),
+    CNPJ(TipoDeChave.CPF),
+    PHONE(TipoDeChave.TELEFONE);
 }
 
-enum class AccountType {
-    CACC, SVGS;
+enum class AccountType(
+    val tipoDeConta: TipoDeConta
+) {
+    CACC(TipoDeConta.CONTA_CORRENTE),
+    SVGS(TipoDeConta.CONTA_POUPANCA);
 }
 
 data class BankAccount(
@@ -60,6 +51,12 @@ data class BankAccount(
     val accountNumber: String,
     val accountType: AccountType,
 ) {
+    constructor(conta: Conta) : this(
+        participant = conta.instituicao.ispb,
+        branch = conta.agencia,
+        accountNumber = conta.numero,
+        accountType = conta.tipo.type
+    )
 }
 
 data class Owner(
@@ -67,4 +64,8 @@ data class Owner(
     val name: String,
     val taxIdNumber: String
 ) {
+    constructor(conta: Conta) : this(
+        name = conta.titular.nome,
+        taxIdNumber = conta.titular.cpf
+    )
 }

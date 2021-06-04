@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull
 class ChavePix(
     @Column(unique = true)
     @NotBlank
-    val chave: String,
+    var chave: String,
     @Enumerated(EnumType.STRING)
     @NotNull
     val tipoDeChave: TipoDeChave,
@@ -25,4 +25,7 @@ class ChavePix(
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     var id: String? = null
 
+    fun atualiza(key: String?) {
+        chave = key!!
+    }
 }

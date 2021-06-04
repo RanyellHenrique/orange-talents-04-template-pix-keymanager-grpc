@@ -10,7 +10,7 @@ import br.com.zup.ranyell.keymanager.pix.registra.RegistraChavePix
 
 fun RegistraChavePixRequest.toModel(): RegistraChavePix {
     return RegistraChavePix(
-        idCliente = idCliente,
+        idCliente = clienteId,
         tipoDeChave = when (tipoDeChave) {
             TipoDeChaveGRPC.UNKNOWN_TIPO_CHAVE -> null
             else -> TipoDeChave.valueOf(tipoDeChave.name)

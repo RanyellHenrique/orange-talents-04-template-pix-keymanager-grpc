@@ -72,7 +72,7 @@ internal class RegistraChavePixEndPointTest(
         //cenário
         val novaChavePixAleatoria = RegistraChavePixRequest.newBuilder()
             .setTipoDeConta(TipoDeConta.CONTA_POUPANCA)
-            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .setClienteId("ae93a61c-0652-43b3-bb8e-a17072295955")
             .setTipoDeChave(TipoDeChave.CHAVE_ALEATORIA)
             .build()
         //ação
@@ -89,7 +89,7 @@ internal class RegistraChavePixEndPointTest(
         val novachavePixInvalida = RegistraChavePixRequest.newBuilder()
             .setChave("1233556")
             .setTipoDeConta(TipoDeConta.CONTA_CORRENTE)
-            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .setClienteId("ae93a61c-0652-43b3-bb8e-a17072295955")
             .build()
         //ação
         val result = assertThrows<StatusRuntimeException> {
@@ -107,7 +107,7 @@ internal class RegistraChavePixEndPointTest(
         val novachavePixInvalida = RegistraChavePixRequest.newBuilder()
             .setChave("1233556")
             .setTipoDeChave(TipoDeChave.CHAVE_ALEATORIA)
-            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .setClienteId("ae93a61c-0652-43b3-bb8e-a17072295955")
             .build()
         //ação
         val result = assertThrows<StatusRuntimeException> {
@@ -140,7 +140,7 @@ internal class RegistraChavePixEndPointTest(
         //cenário
         val novachavePixInvalida = RegistraChavePixRequest.newBuilder()
             .setChave("não tem i padrão")
-            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .setClienteId("ae93a61c-0652-43b3-bb8e-a17072295955")
             .setTipoDeChave(TipoDeChave.EMAIL)
             .setTipoDeConta(TipoDeConta.CONTA_CORRENTE)
             .build()
@@ -258,7 +258,7 @@ internal class RegistraChavePixEndPointTest(
             .setChave("23852310008")
             .setTipoDeChave(TipoDeChave.CPF)
             .setTipoDeConta(TipoDeConta.CONTA_POUPANCA)
-            .setIdCliente("ae93a61c-0652-43b3-bb8e-a17072295955")
+            .setClienteId("ae93a61c-0652-43b3-bb8e-a17072295955")
             .build()
     }
 

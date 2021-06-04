@@ -7,12 +7,18 @@ option objc_class_prefix = "HLW";
 
 package br.com.zup.ranyell.keymanager;
 
+import "google/protobuf/timestamp.proto";
+
 service KeyManagerRemoveGrpcService {
   rpc remove(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
 }
 
 service KeyManagerRegistraGrpcService {
   rpc registra(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
+}
+
+service KeyManagerConsultaGrpcService {
+  rpc consulta(ConsultaChavePixRequest) returns (ConsultaChavePixResponse) {}
 }
 
 enum TipoDeChave {
@@ -35,7 +41,7 @@ message ErrorDetails {
 }
 
 message RegistraChavePixRequest {
-  string idCliente = 1;
+  string clienteId = 1;
   TipoDeChave  tipoDeChave = 2;
   string chave = 3;
   TipoDeConta tipoDeConta = 4;
@@ -46,19 +52,41 @@ message RegistraChavePixResponse {
 }
 
 message RemoveChavePixRequest {
-  string idCliente = 1;
-  string idPix = 2;
+  string clienteId = 1;
+  string pixId = 2;
 }
 
 message RemoveChavePixResponse {
-  string idCliente = 1;
-  string idPix = 2;
+  string clienteId = 1;
+  string pixId = 2;
 }
 
-message KeyManagerRequest {
-  string name = 1;
+message ConsultaChavePixRequest {
+  message FiltroPorPixId {
+    string clienteId = 1;
+    string pixId     = 2;
+  }
+  oneof filtro {
+    FiltroPorPixId pixId  = 1;
+    string chave          = 2;
+  }
+
 }
 
-message KeyManagerReply {
-  string message = 1;
+message ConsultaChavePixResponse {
+  string pixId = 1;
+  string clientId = 2;
+  TipoDeChave TipoDeChave = 3;
+  string chave = 4;
+  string titularNome = 5;
+  string titularCpf = 6;
+  Conta conta = 7;
+  google.protobuf.Timestamp registradaEm = 8;
+}
+
+message Conta {
+  string nome = 1;
+  string agencia = 2;
+  string numero = 3;
+  TipoDeConta tipoDeconta = 4;
 }
