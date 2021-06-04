@@ -7,6 +7,7 @@ import br.com.zup.ranyell.keymanager.sistemabcb.CreatePixKeyResponse
 import br.com.zup.ranyell.keymanager.sistemabcb.PixKeyResponse
 import br.com.zup.ranyell.keymanager.sistemabcb.SistemaBCBClient
 import io.micronaut.core.annotation.Introspected
+import io.micronaut.http.HttpStatus
 import org.slf4j.LoggerFactory
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -25,9 +26,12 @@ sealed class Filtro {
 
         override fun filtra(repository: ChavePixRepository, bcbClient: SistemaBCBClient): ChavePixInfo {
             LOGGER.info("Buscando a chave ${chave} no BCB")
-            val bcbResponse = bcbClient.consulta(chave).body()
+            val bcbResponse = bcbClient.consulta(chave)
+            if(bcbResponse.status != HttpStatus.OK) {
+                throw RecursoNaoEncontradoException("Chave não encontrada no BCB")
+            }
+            return bcbResponse.body()?.toModel()
                 ?: throw RecursoNaoEncontradoException("Chave não encontrada no BCB")
-            return bcbResponse.toModel()
         }
     }
 
@@ -48,8 +52,10 @@ sealed class Filtro {
                 throw RecursoNaoEncontradoException("Chave não encontrada")
             }
             LOGGER.info("Buscando a chave ${chavePix.chave} no BCB")
-            bcbClient.consulta(chavePix.chave).body()
-                ?: throw RecursoNaoEncontradoException("Chave não encontrada no BCB")
+            val bcbResponse = bcbClient.consulta(chavePix.chave)
+            if(bcbResponse.status != HttpStatus.OK) {
+                throw RecursoNaoEncontradoException("Chave não encontrada no BCB")
+            }
             return ChavePixInfo.of(chavePix)
         }
 

@@ -2,6 +2,7 @@ package br.com.zup.ranyell.keymanager.sistemabcb
 
 import br.com.zup.ranyell.keymanager.TipoDeChave
 import br.com.zup.ranyell.keymanager.TipoDeConta
+import br.com.zup.ranyell.keymanager.compartilhado.Instituicoes
 import br.com.zup.ranyell.keymanager.pix.consulta.ChavePixInfo
 import br.com.zup.ranyell.keymanager.pix.consulta.ContaAssociada
 import java.time.LocalDateTime
@@ -30,7 +31,7 @@ data class PixKeyResponse(
             titularNome = owner.name,
             titularCpf = owner.taxIdNumber,
             conta = ContaAssociada(
-                nome = bankAccount.participant,
+                nome = Instituicoes.buscaNomePorIspb(bankAccount.participant),
                 agencia = bankAccount.branch,
                 numero = bankAccount.accountNumber,
                 tipoDeConta = when(bankAccount.accountType) {

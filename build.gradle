@@ -55,6 +55,7 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     implementation("io.micronaut.xml:micronaut-jackson-xml")
+    implementation("org.apache.commons:commons-csv:1.5")
 
 }
 

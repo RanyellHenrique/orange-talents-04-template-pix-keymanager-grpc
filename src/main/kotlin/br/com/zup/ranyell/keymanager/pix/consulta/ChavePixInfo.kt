@@ -3,6 +3,7 @@ package br.com.zup.ranyell.keymanager.pix.consulta
 import br.com.zup.ranyell.keymanager.ConsultaChavePixResponse.*
 import br.com.zup.ranyell.keymanager.TipoDeChave
 import br.com.zup.ranyell.keymanager.TipoDeConta
+import br.com.zup.ranyell.keymanager.compartilhado.Instituicoes
 import br.com.zup.ranyell.keymanager.pix.ChavePix
 import java.time.LocalDateTime
 
@@ -27,7 +28,7 @@ data class ChavePixInfo(
                 tipo = TipoDeChave.valueOf(chavePix.tipoDeChave.name),
                 registradaEm = chavePix.registradaEm,
                 conta = ContaAssociada(
-                    nome = chavePix.conta.instituicao.nome,
+                    nome = Instituicoes.buscaNomePorIspb(chavePix.conta.instituicao.ispb),
                     agencia = chavePix.conta.agencia,
                     numero = chavePix.conta.numero,
                     tipoDeConta = TipoDeConta.valueOf(chavePix.conta.tipo.name)
