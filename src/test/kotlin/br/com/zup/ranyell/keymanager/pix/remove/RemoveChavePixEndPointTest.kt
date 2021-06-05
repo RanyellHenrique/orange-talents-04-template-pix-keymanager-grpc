@@ -48,7 +48,7 @@ internal class RemoveChavePixEndPointTest(
     lateinit var CHAVE_EXISTENTE: ChavePix
 
     @BeforeEach
-    fun setup() {
+    fun setUp() {
         CHAVE_EXISTENTE = chavePix()
         `when`(bcbClient.deleta(any(), any())).thenReturn(HttpResponse.ok(deletePixResponse()))
         repository.save(CHAVE_EXISTENTE)
