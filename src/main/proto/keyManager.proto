@@ -10,83 +10,104 @@ package br.com.zup.ranyell.keymanager;
 import "google/protobuf/timestamp.proto";
 
 service KeyManagerRemoveGrpcService {
-  rpc remove(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
+    rpc remove(RemoveChavePixRequest) returns (RemoveChavePixResponse) {}
 }
 
 service KeyManagerRegistraGrpcService {
-  rpc registra(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
+    rpc registra(RegistraChavePixRequest) returns (RegistraChavePixResponse) {}
 }
 
 service KeyManagerConsultaGrpcService {
-  rpc consulta(ConsultaChavePixRequest) returns (ConsultaChavePixResponse) {}
+    rpc consulta(ConsultaChavePixRequest) returns (ConsultaChavePixResponse) {}
+}
+
+service KeyManagerListaChavePixPorClienteGrpcService {
+    rpc lista(ListaChavePixPorClienteRequest) returns (ListaChavePixPorClienteResponse) {}
 }
 
 enum TipoDeChave {
-  UNKNOWN_TIPO_CHAVE = 0;
-  CHAVE_ALEATORIA= 1;
-  TELEFONE = 2;
-  EMAIL = 3;
-  CPF = 4;
+    UNKNOWN_TIPO_CHAVE = 0;
+    CHAVE_ALEATORIA = 1;
+    TELEFONE = 2;
+    EMAIL = 3;
+    CPF = 4;
 }
 
 enum TipoDeConta {
-  UNKNOWN_TIPO_CONTA = 0;
-  CONTA_CORRENTE = 1;
-  CONTA_POUPANCA = 2;
+    UNKNOWN_TIPO_CONTA = 0;
+    CONTA_CORRENTE = 1;
+    CONTA_POUPANCA = 2;
 }
 
 message ErrorDetails {
-  int32 code = 1;
-  string message = 2;
+    int32 code = 1;
+    string message = 2;
 }
 
 message RegistraChavePixRequest {
-  string clienteId = 1;
-  TipoDeChave  tipoDeChave = 2;
-  string chave = 3;
-  TipoDeConta tipoDeConta = 4;
+    string clienteId = 1;
+    TipoDeChave  tipoDeChave = 2;
+    string chave = 3;
+    TipoDeConta tipoDeConta = 4;
 }
 
 message RegistraChavePixResponse {
-  string pixId = 1;
+    string pixId = 1;
 }
 
 message RemoveChavePixRequest {
-  string clienteId = 1;
-  string pixId = 2;
+    string clienteId = 1;
+    string pixId = 2;
 }
 
 message RemoveChavePixResponse {
-  string clienteId = 1;
-  string pixId = 2;
+    string clienteId = 1;
+    string pixId = 2;
 }
 
 message ConsultaChavePixRequest {
-  message FiltroPorPixId {
-    string clienteId = 1;
-    string pixId     = 2;
-  }
-  oneof filtro {
-    FiltroPorPixId pixId  = 1;
-    string chave          = 2;
-  }
+    message FiltroPorPixId {
+        string clienteId = 1;
+        string pixId = 2;
+    }
+    oneof filtro {
+        FiltroPorPixId pixId = 1;
+        string chave = 2;
+    }
 
 }
 
 message ConsultaChavePixResponse {
-  string pixId = 1;
-  string clientId = 2;
-  TipoDeChave TipoDeChave = 3;
-  string chave = 4;
-  string titularNome = 5;
-  string titularCpf = 6;
-  Conta conta = 7;
-  google.protobuf.Timestamp registradaEm = 8;
+    string pixId = 1;
+    string clientId = 2;
+    TipoDeChave TipoDeChave = 3;
+    string chave = 4;
+    string titularNome = 5;
+    string titularCpf = 6;
+    Conta conta = 7;
+    google.protobuf.Timestamp registradaEm = 8;
 }
 
 message Conta {
-  string nome = 1;
-  string agencia = 2;
-  string numero = 3;
-  TipoDeConta tipoDeconta = 4;
+    string nome = 1;
+    string agencia = 2;
+    string numero = 3;
+    TipoDeConta tipoDeconta = 4;
+}
+
+message ListaChavePixPorClienteRequest {
+    string clientId = 1;
+}
+
+message ListaChavePixPorClienteResponse {
+    repeated ChavePixResponse chaves = 1;
+}
+
+message ChavePixResponse {
+    string pixId = 1;
+    string clienteId = 2;
+    TipoDeChave tipoDeChave = 3;
+    string chave = 4;
+    TipoDeConta tipoDeConta = 5;
+    google.protobuf.Timestamp registradaEm = 8;
 }
