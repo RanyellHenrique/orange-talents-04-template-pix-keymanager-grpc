@@ -1,6 +1,5 @@
 package br.com.zup.ranyell.keymanager.pix.consulta
 
-import br.com.zup.ranyell.keymanager.ConsultaChavePixResponse.*
 import br.com.zup.ranyell.keymanager.TipoDeChave
 import br.com.zup.ranyell.keymanager.TipoDeConta
 import br.com.zup.ranyell.keymanager.compartilhado.Instituicoes

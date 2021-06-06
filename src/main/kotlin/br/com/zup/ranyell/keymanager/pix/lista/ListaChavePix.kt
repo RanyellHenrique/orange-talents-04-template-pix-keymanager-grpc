@@ -8,7 +8,7 @@ import com.google.protobuf.Timestamp
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-data class ListaChavePix(
+class ListaChavePix(
     val pixId: String,
     val clienteId: String,
     val tipoDeChave: TipoDeChave,
@@ -16,15 +16,18 @@ data class ListaChavePix(
     val chave: String,
     val registradaEm: LocalDateTime
 ) {
-
-    constructor(chavePix: ChavePix) : this(
-        pixId = chavePix.id!!,
-        clienteId = chavePix.conta.titular.id,
-        tipoDeChave = chavePix.tipoDeChave,
-        tipoDeConta = chavePix.conta.tipo,
-        chave = chavePix.chave,
-        registradaEm = chavePix.registradaEm
-    )
+    companion object {
+        fun of(chavePix: ChavePix): ListaChavePix {
+            return ListaChavePix(
+                pixId = chavePix.id!!,
+                clienteId = chavePix.conta.titular.id,
+                tipoDeChave = chavePix.tipoDeChave,
+                tipoDeConta = chavePix.conta.tipo,
+                chave = chavePix.chave,
+                registradaEm = chavePix.registradaEm
+            )
+        }
+    }
 
     fun toResponse(): ChavePixResponse {
         return ChavePixResponse.newBuilder()

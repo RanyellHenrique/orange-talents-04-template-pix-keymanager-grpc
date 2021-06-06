@@ -15,6 +15,6 @@ class ListaChavePixService(
 ) {
 
     fun lista(@Valid @UUIDValid @NotBlank clienteId: String): List<ListaChavePix>{
-        return repository.findByContaTitularId(clienteId).map(::ListaChavePix)
+        return repository.findByContaTitularId(clienteId).map(ListaChavePix::of)
     }
 }
