@@ -18,7 +18,7 @@ class ListaChavePixEndPoint(
         request: ListaChavePixPorClienteRequest?,
         responseObserver: StreamObserver<ListaChavePixPorClienteResponse>?
     ) {
-        val listaResponse = listaService.lista(request!!.clientId).map {it.toResponse()}
+        val listaResponse = listaService.lista(request!!.clientId)
         val response = ListaChavePixPorClienteResponse.newBuilder().addAllChaves(listaResponse).build()
         responseObserver!!.onNext(response)
         responseObserver.onCompleted()

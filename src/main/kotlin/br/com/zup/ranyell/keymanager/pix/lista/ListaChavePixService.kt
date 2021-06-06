@@ -1,5 +1,6 @@
 package br.com.zup.ranyell.keymanager.pix.lista
 
+import br.com.zup.ranyell.keymanager.ChavePixResponse
 import br.com.zup.ranyell.keymanager.compartilhado.validacao.UUIDValid
 import br.com.zup.ranyell.keymanager.pix.ChavePixRepository
 import io.micronaut.validation.Validated
@@ -14,7 +15,7 @@ class ListaChavePixService(
     @Inject val repository: ChavePixRepository
 ) {
 
-    fun lista(@Valid @UUIDValid @NotBlank clienteId: String): List<ListaChavePix>{
-        return repository.findByContaTitularId(clienteId).map(ListaChavePix::of)
+    fun lista(@Valid @UUIDValid @NotBlank clienteId: String): List<ChavePixResponse>{
+        return repository.findByContaTitularId(clienteId).map{ChavePixResponseConverter().toResponse(it)}
     }
 }
