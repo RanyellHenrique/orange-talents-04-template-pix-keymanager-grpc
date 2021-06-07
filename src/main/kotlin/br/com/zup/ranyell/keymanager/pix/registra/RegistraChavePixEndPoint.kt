@@ -21,6 +21,7 @@ class RegistraChavePixEndPoint(
         val pix = chavePixService.registra(request!!.toModel())
         val response = RegistraChavePixResponse.newBuilder()
             .setPixId(pix.id)
+            .setClienteId(pix.conta.titular.id)
             .build()
 
         responseObserver!!.onNext(response)

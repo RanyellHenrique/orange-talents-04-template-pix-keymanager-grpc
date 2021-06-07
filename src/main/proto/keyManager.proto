@@ -53,6 +53,7 @@ message RegistraChavePixRequest {
 
 message RegistraChavePixResponse {
     string pixId = 1;
+    string clienteId = 2;
 }
 
 message RemoveChavePixRequest {
