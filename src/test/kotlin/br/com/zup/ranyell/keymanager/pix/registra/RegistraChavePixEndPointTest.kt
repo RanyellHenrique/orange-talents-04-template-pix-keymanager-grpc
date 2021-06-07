@@ -165,7 +165,7 @@ internal class RegistraChavePixEndPointTest(
         }
         //validacao
         with(result) {
-            assertEquals(Status.INVALID_ARGUMENT.code, status.code)
+            assertEquals(Status.NOT_FOUND.code, status.code)
             assertEquals(0, repository.count())
         }
     }

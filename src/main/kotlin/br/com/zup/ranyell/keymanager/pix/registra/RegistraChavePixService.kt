@@ -1,6 +1,7 @@
 package br.com.zup.ranyell.keymanager.pix.registra
 
 import br.com.zup.ranyell.keymanager.compartilhado.excecao.RecursoExistenteException
+import br.com.zup.ranyell.keymanager.compartilhado.excecao.RecursoNaoEncontradoException
 import br.com.zup.ranyell.keymanager.pix.ChavePix
 import br.com.zup.ranyell.keymanager.pix.ChavePixRepository
 import br.com.zup.ranyell.keymanager.sistemabcb.CreatePixKeyRequest
@@ -32,7 +33,7 @@ class RegistraChavePixService(
 
         //2 - Busca os dados no ITAU
         val responseItau = itauClient.consulta(registraChavePix.idCliente, registraChavePix.tipoDeConta!!.name)
-        val conta = responseItau.body()?.toModel() ?: throw IllegalArgumentException("Cliente não encontrado no Itaú")
+        val conta = responseItau.body()?.toModel() ?: throw RecursoNaoEncontradoException("Cliente não encontrado no Itaú")
 
         //3 - Grava no banco
         val chave = registraChavePix.toModel(conta)
