@@ -1,12 +1,13 @@
 micronaut:
   application:
     name: keyManager
+
 datasources:
   default:
-    url: jdbc:postgresql://localhost:5432/keymanager
+    url: ${DB_URL:`jdbc:postgresql://localhost:5432/keymanager`}
     driverClassName: org.postgresql.Driver
-    username: postgres
-    password: postgres
+    username: ${DB_USER_NAME:`postgres`}
+    password: ${DB_PASSWORD:`postgres`}
     dialect: postgres
 
 jpa:
@@ -18,9 +19,9 @@ jpa:
 
 itau:
   contas:
-    url: 'http://localhost:9091'
+    url: ${URL_CONTAS_ITAU:`http://localhost:9091`}
 
 bcb:
   pix:
-    url: 'http://localhost:8082'
+    url: ${URL_BCB_PIX:`http://localhost:8082`}
 
